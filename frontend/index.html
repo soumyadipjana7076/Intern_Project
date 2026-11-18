@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chicken Run — Temple Escape Edition</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐔</text></svg>">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navigation Bar -->
+    <header class="top-bar">
+      <div class="brand">
+        <div class="brand-avatar">🐔</div>
+        <div class="brand-text">
+          <h1>CHICKEN RUN</h1>
+          <span class="sub-brand">TEMPLE ESCAPE EDITION</span>
+        </div>
+      </div>
+
+      <div class="top-controls">
+        <!-- Backend API Status Indicator -->
+        <div class="api-badge" id="apiStatusBadge" title="Core Java Backend API Status">
+          <span class="status-dot pulse" id="apiStatusDot"></span>
+          <span id="apiStatusText">Checking API...</span>
+        </div>
+
+        <!-- Sound Toggle Button -->
+        <button id="soundToggleBtn" class="icon-btn" title="Toggle Sound">
+          <span id="soundIcon">🔊</span>
+        </button>
+
+        <!-- Help / How to Play Modal Trigger -->
+        <button id="helpToggleBtn" class="icon-btn" title="Game Controls & Help">
+          <span>❓</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Layout: Game Screen + Sidebar Leaderboard -->
+    <main class="main-layout">
+      <!-- Game Section -->
+      <section class="game-section">
+        <div class="game-wrapper" id="gameWrapper">
+          <!-- Canvas Game Area -->
+          <canvas id="gameCanvas"></canvas>
+
+          <!-- Floating On-Screen HUD -->
+          <div class="game-hud" id="gameHud">
+            <div class="hud-item score-hud">
+              <span class="hud-label">SCORE</span>
+              <span class="hud-val" id="hudScore">0</span>
+            </div>
+            <div class="hud-item coins-hud">
+              <span class="coin-icon">🪙</span>
+              <span class="hud-val" id="hudCoins">0</span>
+            </div>
+            <div class="hud-item distance-hud">
+              <span class="hud-label">DIST</span>
+              <span class="hud-val" id="hudDistance">0m</span>
+            </div>
+            <div class="hud-item speed-hud">
+              <span class="hud-label">SPEED</span>
+              <span class="hud-val" id="hudSpeed">1.0x</span>
+            </div>
+          </div>
+
+          <!-- START / TITLE OVERLAY -->
+          <div class="screen-overlay" id="startScreen">
+            <div class="overlay-card bounce-in">
+              <div class="card-hero-icon animated-chicken">🐔</div>
+              <div class="tag-pill">3D TEMPLE RUNNER</div>
+              <h2>ESCAPE THE TEMPLE!</h2>
+              <p class="card-desc">Dodge ancient rocks, slide under temple beams, and grab shiny golden coins before the temple collapses!</p>
+
+              <div class="player-input-group">
+                <label for="playerNameInput">RUNNER NAME</label>
+                <div class="input-wrapper">
+                  <span class="input-icon">👤</span>
+                  <input type="text" id="playerNameInput" maxlength="16" placeholder="Enter your runner name" value="TempleRunner">
+                </div>
+              </div>
+
+              <button id="startRunBtn" class="btn btn-primary btn-large glow-btn">
+                <span>▶ START RUN</span>
+              </button>
+
+              <div class="quick-controls-hint">
+                <span><kbd>A</kbd>/<kbd>D</kbd> or <kbd>←</kbd>/<kbd>→</kbd> Lane</span>
+                <span><kbd>W</kbd>/<kbd>Space</kbd> Jump</span>
+                <span><kbd>S</kbd>/<kbd>↓</kbd> Slide</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- GAME OVER OVERLAY -->
+          <div class="screen-overlay hidden" id="gameOverScreen">
+            <div class="overlay-card game-over-card shake-card">
+              <div class="card-hero-icon">💥</div>
+              <div class="tag-pill warning-pill">RUN TERMINATED</div>
+              <h2 id="gameOverTitle">TEMPLE COLLAPSE!</h2>
+              <p class="card-desc" id="gameOverSub">You hit an obstacle! But your courage will be remembered in the temple archives.</p>
+
+              <div class="results-grid">
+                <div class="result-box">
+                  <span class="result-label">FINAL SCORE</span>
+                  <span class="result-val score-color" id="finalScoreVal">0</span>
+                </div>
+                <div class="result-box">
+                  <span class="result-label">COINS COLLECTED</span>
+                  <span class="result-val coins-color" id="finalCoinsVal">0</span>
+                </div>
+                <div class="result-box">
+                  <span class="result-label">DISTANCE</span>
+                  <span class="result-val dist-color" id="finalDistVal">0m</span>
+                </div>
+                <div class="result-box">
+                  <span class="result-label">JAVA ARRAY RANK</span>
+                  <span class="result-val rank-color" id="finalRankVal">-</span>
+                </div>
+              </div>
+
+              <div class="overlay-actions">
+                <button id="restartBtn" class="btn btn-primary btn-large">
+                  <span>🔄 RUN AGAIN</span>
+                </button>
+                <button id="viewBoardBtn" class="btn btn-secondary">
+                  <span>🏆 View Leaderboard</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PAUSE OVERLAY -->
+          <div class="screen-overlay hidden" id="pauseScreen">
+            <div class="overlay-card small-card">
+              <div class="card-hero-icon">⏸️</div>
+              <h2>GAME PAUSED</h2>
+              <p class="card-desc">Take a breath, temple explorer!</p>
+              <button id="resumeBtn" class="btn btn-primary btn-large">▶ RESUME</button>
+              <button id="quitBtn" class="btn btn-secondary">⏹ QUIT RUN</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Touch Controls for On-Screen Play -->
+        <div class="mobile-controls" id="mobileControls">
+          <div class="touch-row">
+            <button class="touch-btn" id="touchJumpBtn" aria-label="Jump">
+              <span>▲</span>
+              <small>JUMP</small>
+            </button>
+          </div>
+          <div class="touch-row">
+            <button class="touch-btn" id="touchLeftBtn" aria-label="Left">
+              <span>◀</span>
+              <small>LEFT</small>
+            </button>
+            <button class="touch-btn touch-slide" id="touchSlideBtn" aria-label="Slide">
+              <span>▼</span>
+              <small>SLIDE</small>
+            </button>
+            <button class="touch-btn" id="touchRightBtn" aria-label="Right">
+              <span>▶</span>
+              <small>RIGHT</small>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sidebar: Live Array Database Leaderboard & System Info -->
+      <aside class="sidebar-section">
+        <!-- Leaderboard Card -->
+        <div class="side-card leaderboard-card">
+          <div class="card-header">
+            <div class="header-left">
+              <span class="card-icon">🏆</span>
+              <div>
+                <h3>TEMPLE HALL OF FAME</h3>
+                <span class="card-subtitle">CORE JAVA ARRAY DATABASE</span>
+              </div>
+            </div>
+            <button id="refreshBoardBtn" class="icon-btn small-btn" title="Refresh from Java Array API">
+              🔄
+            </button>
+          </div>
+
+          <div class="leaderboard-container">
+            <div class="table-header">
+              <span class="col-rank">#</span>
+              <span class="col-player">RUNNER</span>
+              <span class="col-coins">🪙</span>
+              <span class="col-score">SCORE</span>
+            </div>
+            <div class="table-body" id="leaderboardList">
+              <!-- Dynamically populated from Java Array API -->
+              <div class="loading-state">
+                <span class="spinner"></span>
+                <span>Loading top scores from Java Array...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Architecture & Array Database Info Card -->
+        <div class="side-card tech-card">
+          <div class="card-header">
+            <div class="header-left">
+              <span class="card-icon">⚡</span>
+              <div>
+                <h3>ARRAY DATABASE ENGINE</h3>
+                <span class="card-subtitle">SYSTEM ARCHITECTURE</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tech-specs">
+            <div class="spec-row">
+              <span class="spec-label">Backend</span>
+              <span class="spec-val badge">Core Java (HttpServer)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Database Type</span>
+              <span class="spec-val badge green-badge">Pure In-Memory Java Array</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Array Capacity</span>
+              <span class="spec-val badge">50 Records (Fixed)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Algorithm</span>
+              <span class="spec-val badge">O(log N) Search / O(N) Shift</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Frontend</span>
+              <span class="spec-val badge">HTML5 Canvas + CSS3 + JS</span>
+            </div>
+          </div>
+
+          <div class="card-footer-actions">
+            <button id="resetArrayBtn" class="btn btn-secondary btn-sm" title="Reset array database to initial championship scores">
+              ⚠️ Reset Array DB
+            </button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Help Modal Overlay -->
+    <div class="modal-backdrop hidden" id="helpModal">
+      <div class="modal-box bounce-in">
+        <div class="modal-header">
+          <h3>🎮 HOW TO PLAY CHICKEN RUN</h3>
+          <button id="closeHelpBtn" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="instruction-grid">
+            <div class="instruct-item">
+              <div class="instruct-icon">↔️</div>
+              <div class="instruct-text">
+                <b>Move Left / Right</b>
+                <p>Press <kbd>A</kbd> / <kbd>D</kbd> or <kbd>←</kbd> / <kbd>→</kbd> or swipe sideways to switch across 3 lanes.</p>
+              </div>
+            </div>
+            <div class="instruct-item">
+              <div class="instruct-icon">⬆️</div>
+              <div class="instruct-text">
+                <b>Jump Over Rocks</b>
+                <p>Press <kbd>W</kbd>, <kbd>↑</kbd> or <kbd>Space</kbd> or swipe up to leap over boulders and low hurdles.</p>
+              </div>
+            </div>
+            <div class="instruct-item">
+              <div class="instruct-icon">⬇️</div>
+              <div class="instruct-text">
+                <b>Slide Under Beams</b>
+                <p>Press <kbd>S</kbd>, <kbd>↓</kbd> or swipe down to duck and slide under hanging temple beams.</p>
+              </div>
+            </div>
+            <div class="instruct-item">
+              <div class="instruct-icon">🪙</div>
+              <div class="instruct-text">
+                <b>Collect Golden Coins & Eggs</b>
+                <p>Each coin adds +25 bonus points. Golden eggs grant +100 bonus and speed bursts!</p>
+              </div>
+            </div>
+            <div class="instruct-item">
+              <div class="instruct-icon">💾</div>
+              <div class="instruct-text">
+                <b>Real-Time API & Array DB</b>
+                <p>Scores are posted via REST API to the Core Java server and placed in descending rank inside the in-memory Java array!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="closeHelpBtn2" class="btn btn-primary">GOT IT, LET'S RUN!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

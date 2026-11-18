@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+:root{font-family:Nunito,system-ui,sans-serif;color:#243326;background:#f4f2e8;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0;min-width:320px;background:radial-gradient(circle at 50% 0,#fffdf4,#eeeadd 75%)}
+button,input{font:inherit}.app{max-width:1220px;margin:auto;padding:24px 28px 18px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:12px}.brandIcon{display:grid;place-items:center;width:52px;height:52px;background:#f6ca52;border:3px solid #283d2b;border-radius:16px;font-size:29px;box-shadow:3px 3px 0 #283d2b}
+.brand b{display:block;font-size:22px;letter-spacing:2px;font-weight:900}.brand small{font-size:10px;letter-spacing:3px;font-weight:900;color:#8a795b}
+.topRight{display:flex;align-items:center;gap:12px}.pill{background:#e3ead6;border:1px solid #c7d4b6;border-radius:30px;padding:8px 13px;font-size:10px;font-weight:900;letter-spacing:1.5px}.sound{border:2px solid #314630;background:#fffdf4;border-radius:12px;width:40px;height:40px;font-size:20px;cursor:pointer}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}
+.gameFrame{position:relative;overflow:hidden;border:4px solid #263b2a;border-radius:22px;background:#9bd8e7;box-shadow:0 8px 0 #263b2a;min-height:560px}
+.gameCanvas{display:block;width:100%;height:560px;touch-action:pan-y}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(24,38,27,.30);padding:18px}
+.panel{width:min(390px,95%);padding:28px 30px 25px;text-align:center;background:#fff9e9;border:3px solid #263b2a;border-radius:22px;box-shadow:7px 7px 0 rgba(28,48,31,.65)}
+.bigEmoji{font-size:52px;line-height:1.2}.eyebrow{margin:8px 0 4px;color:#b47a24;font-size:11px;font-weight:900;letter-spacing:2px}
+.panel h1{margin:0 0 8px;font-size:29px;line-height:1.1;font-weight:900;color:#293e2d}.muted{font-size:13px;color:#7c806f;line-height:1.5;margin:8px 0 16px}
+.panel input{width:100%;padding:11px 13px;border:2px solid #d9d2bd;border-radius:10px;background:#fff;font-weight:700;outline:none;margin-bottom:11px;text-align:center}
+.primary,.secondary{width:100%;border:2px solid #263b2a;border-radius:11px;padding:12px;font-weight:900;letter-spacing:1px;cursor:pointer}
+.primary{background:#f6c94e;box-shadow:0 4px 0 #263b2a;color:#283b2a}.primary:active{transform:translateY(3px);box-shadow:0 1px 0 #263b2a}
+.secondary{margin-top:10px;background:transparent;color:#43513f;font-size:12px}
+.result{display:flex;justify-content:center;gap:44px;margin:18px 0}.result b{display:block;font-size:30px}.result small{display:block;color:#8b856f;font-size:10px;font-weight:900;letter-spacing:1px}
+.controls{display:flex;gap:22px;justify-content:center;align-items:center;padding:18px 5px;color:#65705d;font-size:12px;font-weight:800}.controls span{display:flex;align-items:center;gap:5px}kbd{min-width:24px;padding:4px 6px;text-align:center;border:1px solid #c9c6b7;border-bottom-width:3px;border-radius:6px;background:#fffdf7;color:#334432;font-weight:900}
+.sidebar{display:grid;gap:16px}.sideCard{background:#fffdf5;border:2px solid #314632;border-radius:17px;padding:18px;box-shadow:4px 4px 0 #314632}
+.cardTitle{font-size:14px;font-weight:900;letter-spacing:1px;display:flex;align-items:center;gap:9px}.cardTitle span{font-size:20px}.cardSub{font-size:9px;letter-spacing:2px;font-weight:900;color:#9a927b;margin:3px 0 16px 30px}
+.empty{text-align:center;padding:24px 5px;color:#9a927b;font-size:13px;line-height:1.7}
+.leaderboard{list-style:none;padding:0;margin:14px 0 0}.leaderboard li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed #e1ddcd;font-size:13px}.leaderboard li:last-child{border:0}.rank{display:grid;place-items:center;width:24px;height:24px;border-radius:8px;background:#f5d46f;font-weight:900}.runnerName{flex:1;font-weight:800;overflow:hidden;text-overflow:ellipsis}.leaderboard b{font-size:13px}
+.tips{padding-bottom:10px}.tip{padding:12px 0;border-bottom:1px dashed #e1ddcd}.tip:last-child{border:0}.tip b,.tip small{display:block}.tip b{font-size:12px}.tip small{font-size:11px;color:#898b7b;margin-top:3px}
+footer{text-align:center;margin-top:22px;font-size:9px;font-weight:900;letter-spacing:2px;color:#96917d}footer span{padding:0 8px;color:#d1a73b}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{grid-template-columns:1fr 1fr}.gameFrame{min-height:460px}.gameCanvas{height:460px}}
+@media(max-width:560px){.app{padding:15px 12px}.brand b{font-size:17px}.pill{display:none}.gameFrame{min-height:420px}.gameCanvas{height:420px}.sidebar{grid-template-columns:1fr}.controls{gap:9px;flex-wrap:wrap}.controls span{font-size:10px}.panel{padding:20px}.panel h1{font-size:24px}}
